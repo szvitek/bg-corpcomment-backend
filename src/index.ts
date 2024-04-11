@@ -1,12 +1,18 @@
 import { PrismaClient } from '@prisma/client';
 import express from 'express';
 import cors from 'cors';
+import logger from 'morgan';
+import helmet from 'helmet';
 
 const prisma = new PrismaClient();
 const app = express();
 
+const PORT = process.env.PORT || 3000;
+
+app.use(logger('dev'));
 app.use(cors());
 app.use(express.json());
+app.use(helmet());
 
 app.get('/api/feedbacks', async (req, res) => {
   const feedbacks = await prisma.feedback.findMany();
@@ -72,6 +78,6 @@ app.delete('/api/feedbacks/:id', async (req, res) => {
   res.json(feedback);
 });
 
-app.listen(3000, () =>
-  console.log('🚀 REST API server ready at: http://localhost:3000')
+app.listen(PORT, () =>
+  console.log(`🚀 REST API server ready at: http://localhost:${PORT}`)
 );
